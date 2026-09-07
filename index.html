@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="el">
 <head>
 <meta charset="UTF-8">
@@ -8,180 +8,52 @@
 <link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
 
-<style>
-    /* Προστασία - μόνο εκτός inputs */
-    *:not(input):not(textarea):not(select) {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-    input, textarea, select {
-        -webkit-user-select: text !important;
-        -moz-user-select: text !important;
-        -ms-user-select: text !important;
-        user-select: text !important;
-    }
-    ::selection {
-        background: transparent;
-        color: inherit;
-    }
-    input::selection, textarea::selection, select::selection {
-        background: #0055ff !important;
-        color: white !important;
-    }
-</style>
-
 <script>
-// ============================================
-// ΠΡΟΣΤΑΣΙΑ - ΔΙΟΡΘΩΜΕΝΗ (χωρίς αναβοσβήσιμο σε κινητά)
-// ============================================
+// ΜΠΛΟΚΑΡΙΣΜΑ ΔΕΞΙΟΥ ΚΛΙΚ - ΜΟΝΟ ΣΤΟ GITHUB (ΠΑΡΑΓΩΓΗ)
 (function() {
-    'use strict';
-
-    // 1. Μπλοκάρισμα δεξιού κλικ
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    });
-    document.oncontextmenu = function() { return false; };
-
-    // 2. Μπλοκάρισμα πλήκτρων (F12, Ctrl+U, κλπ.)
-    document.addEventListener('keydown', function(e) {
-        const tag = e.target.tagName.toLowerCase();
-        const isInput = (tag === 'input' || tag === 'textarea' || tag === 'select');
+    // Έλεγχος αν είμαστε σε παραγωγή (GitHub Pages)
+    const hostname = window.location.hostname;
+    const isProduction = !hostname.includes('localhost') && 
+                         !hostname.includes('127.0.0.1') &&
+                         !hostname.includes('::1') &&
+                         !hostname.includes('.local') &&
+                         !hostname.startsWith('192.168.') &&
+                         !hostname.startsWith('10.') &&
+                         !hostname.startsWith('172.') &&
+                         hostname !== '' &&
+                         !window.location.protocol.startsWith('file:');
+    
+    if (isProduction) {
+        // Μπλοκάρισμα δεξιού κλικ
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
         
-        if (e.key === 'F12') { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); return false; }
-        if (e.altKey && e.metaKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'P' || e.key === 'p')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'K' || e.key === 'k')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) { e.preventDefault(); return false; }
-
-        // Copy, Paste, Cut - ΕΠΙΤΡΕΠΟΝΤΑΙ σε inputs
-        if (e.ctrlKey && (e.key === 'C' || e.key === 'c')) {
-            if (!isInput) { e.preventDefault(); return false; }
-            return true;
-        }
-        if (e.ctrlKey && (e.key === 'V' || e.key === 'v')) {
-            if (!isInput) { e.preventDefault(); return false; }
-            return true;
-        }
-        if (e.ctrlKey && (e.key === 'X' || e.key === 'x')) {
-            if (!isInput) { e.preventDefault(); return false; }
-            return true;
-        }
-    });
-
-    // 3. Αποτροπή επιλογής κειμένου (εκτός inputs)
-    document.addEventListener('selectstart', function(e) {
-        const tag = e.target.tagName.toLowerCase();
-        if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
-            e.preventDefault();
-            return false;
-        }
-    });
-
-    // 4. Αποτροπή copy/paste (εκτός inputs)
-    document.addEventListener('copy', function(e) {
-        const tag = e.target.tagName.toLowerCase();
-        if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
-            e.preventDefault();
-            return false;
-        }
-    });
-    document.addEventListener('paste', function(e) {
-        const tag = e.target.tagName.toLowerCase();
-        if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
-            e.preventDefault();
-            return false;
-        }
-    });
-    document.addEventListener('cut', function(e) {
-        const tag = e.target.tagName.toLowerCase();
-        if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
-            e.preventDefault();
-            return false;
-        }
-    });
-
-    // 5. Αποτροπή drag (εκτός inputs)
-    document.addEventListener('dragstart', function(e) {
-        const tag = e.target.tagName.toLowerCase();
-        if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
-            e.preventDefault();
-            return false;
-        }
-    });
-
-    // 6. Απενεργοποίηση console (προαιρετικό)
-    if (window.console) {
-        console.log = function() {};
-        console.info = function() {};
-        console.warn = function() {};
-        console.error = function() {};
-        console.debug = function() {};
-        console.table = function() {};
-        console.trace = function() {};
-        console.group = function() {};
-        console.groupEnd = function() {};
-        console.time = function() {};
-        console.timeEnd = function() {};
+        // Μπλοκάρισμα F12, Ctrl+Shift+I, Ctrl+U
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        console.log('Προστασια δεξιου κλικ ενεργοποιημενη (production)');
+    } else {
+        console.log('Τοπικη αναπτυξη - δεξι κλικ λειτουργει κανονικα');
     }
-
-    // 7. ΠΡΟΣΤΑΣΙΑ ΑΠΟ DEVTOOLS - ΔΙΟΡΘΩΜΕΝΗ (χωρίς αναβοσβήσιμο σε κινητά)
-    let devtoolsOpen = false;
-    let orientationChanging = false;
-    
-    // Ανίχνευση αλλαγής προσανατολισμού
-    window.addEventListener('orientationchange', function() {
-        orientationChanging = true;
-        setTimeout(function() {
-            orientationChanging = false;
-        }, 1000);
-    });
-    
-    setInterval(function() {
-        // Αν αλλάζει προσανατολισμός, ΜΗΝ κάνεις τίποτα
-        if (orientationChanging) {
-            return;
-        }
-        
-        const threshold = 160;
-        const widthDiff = window.outerWidth - window.innerWidth;
-        const heightDiff = window.outerHeight - window.innerHeight;
-        
-        if (widthDiff > threshold || heightDiff > threshold) {
-            if (!devtoolsOpen) {
-                devtoolsOpen = true;
-                // Αντί να κάνει fade, απλά μπλοκάρουμε το context menu
-                document.body.style.pointerEvents = 'none';
-                setTimeout(function() {
-                    document.body.style.pointerEvents = '';
-                    devtoolsOpen = false;
-                }, 300);
-            }
-        } else {
-            if (devtoolsOpen) {
-                devtoolsOpen = false;
-                document.body.style.pointerEvents = '';
-            }
-        }
-    }, 3000);
-
-    // 8. Προστασία από αντιγραφή HTML
-    Object.defineProperty(window, 'console', {
-        value: console,
-        writable: false,
-        configurable: false
-    });
-
-    console.log('🔒 Πλήρης προστασία ενεργοποιημένη (διορθωμένη για κινητά)');
 })();
 </script>
 
@@ -192,140 +64,146 @@
     <div class="logo">YIOIO</div>
     <div class="header-controls">
 	<div class="search-wrapper" style="position: relative; width: 220px;">
-    <input type="text" id="movieSearch" placeholder="Αναζήτηση...">
+    <input type="text" id="movieSearch" placeholder="Αναζητηση...">
     <button class="clear-search-btn hidden" id="clearSearchBtn">X</button>
 </div>
         <button class="theme-btn">Theme</button>
         <button class="filter-type-btn active" data-type="all" id="allMoviesBtn">Ολα</button>
-        <button class="filter-type-btn" data-type="Movie">Ταινίες</button>
-        <button class="filter-type-btn" data-type="Series">Σειρές</button>
+        <button class="filter-type-btn" data-type="Movie">Ταινιες</button>
+        <button class="filter-type-btn" data-type="Series">Σειρες</button>
         <span id="userNameDisplay" style="margin-right: 10px; font-weight: bold; color: var(--primary);"></span>
         <button id="loginUserBtn" class="login-btn">Εισοδος</button>
-        <button id="logoutUserBtn" class="logout-user-btn" style="display:none;">Αποσύνδεση</button>
+        <button id="logoutUserBtn" class="logout-user-btn" style="display:none;">Αποσυνδεση</button>
         <div class="count-wrapper">
-            <div id="movieCount">Τίτλοι: 0</div>
-            <button class="update-btn-header">Ενημέρωση</button>
+            <div id="movieCount">Τιτλοι: 0</div>
+            <button class="update-btn-header">Ενημερωση</button>
         </div>
     </div>
 </header>
-
-<!-- Φίλτρα -->
+<!-- Φιλτρα (επαναφορα) -->
 <div class="filter-group">
     <select id="genreFilter">
-        <option value="All">Ολες οι Κατηγορίες</option>
-        <option value="Biography">Βιογραφικές</option>
-        <option value="Oscar Winner">Νικητές Οσκαρ</option>
+        <option value="All">Ολες οι Κατηγοριες</option>
+        <option value="Biography">Βιογραφικες</option>
+        <option value="Oscar Winner">Νικητες Οσκαρ</option>
     </select>
     <select id="sortSelect">
-        <option value="title">Τίτλος (Α-Ω)</option>
-        <option value="idDesc">ID (Νεότερα πρώτα)</option>
-        <option value="idAsc">ID (Παλαιότερα πρώτα)</option>
-        <option value="yearDesc">Νεότερες πρώτα</option>
-        <option value="ratingDesc">Βαθμολογία (Υψηλή-Χαμηλή)</option>
-        <option value="yearAsc">Παλαιότερες πρώτα</option>
-        <option value="latest">Πρόσφατες Προσθήκες</option>
-        <option value="qualityHD">Ποιότητα (HD/4K πρώτα)</option>
-        <option value="qualitySD">Ποιότητα (SD πρώτα)</option>
-        <option value="pendingOnly">Σε Αναμονή</option>
+        <option value="title">Τιτλος (Α-Ω)</option>
+        <option value="idDesc">ID (Νεοτερα πρωτα)</option>
+        <option value="idAsc">ID (Παλαιοτερα πρωτα)</option>
+        <option value="yearDesc">Νεοτερες πρωτα</option>
+        <option value="ratingDesc">Βαθμολογια (Υψηλη-Χαμηλη)</option>
+        <option value="yearAsc">Παλαιοτερες πρωτα</option>
+        <option value="latest" selected>Προσφατες Προσθηκες</option>
+        <option value="qualityHD">Ποιοτητα (HD/4K πρωτα)</option>
+        <option value="qualitySD">Ποιοτητα (SD πρωτα)</option>
+        <option value="pendingOnly">Σε Αναμονη</option>
         <option value="collection_favorites">Favorites</option>
         <option value="collection_watchlist">Watchlist</option>
+        <option value="dubbedOnly">Μεταγλωτισμενα</option>
+        <option value="seriesCompleted">Σειρες Ολοκληρωμενες</option>
+        <option value="seriesOngoing">Σειρες Σε Εξελιξη</option>
     </select>
     <select id="yearFilter"><option value="All">Ολα τα ετη</option></select>
     <select id="countryFilter"><option value="All">Ολες οι Χωρες</option></select>
     <select id="studioFilter"><option value="All">Ολες οι Πλατφορμες</option></select>
 </div>
-
-<!-- Dashboard -->
 <div class="dashboard" id="dashboard" style="display:none;">
-    <div class="dashboard-header"><h3>Στατιστικά</h3><button class="close-dash-btn">X</button></div>
+    <div class="dashboard-header"><h3>Στατιστικα</h3><button class="close-dash-btn">X</button></div>
     <div class="dashboard-stats">
-        <div class="stat-item"><span class="stat-label">Σύνολο Τίτλων:</span><span class="stat-value" id="statTotal">0</span></div>
-        <div class="stat-item"><span class="stat-label">Ταινίες:</span><span class="stat-value" id="statMovies">0</span></div>
-        <div class="stat-item"><span class="stat-label">Σειρές:</span><span class="stat-value" id="statSeries">0</span></div>
-        <div class="stat-item"><span class="stat-label">Μ.Ο. Βαθμολογίας:</span><span class="stat-value" id="statAvgRating">0</span></div>
-        <div class="stat-item"><span class="stat-label">Πιο Δημοφιλές Genre:</span><span class="stat-value" id="statTopGenre">-</span></div>
-        <div class="stat-item"><span class="stat-label">Παλαιότερη:</span><span class="stat-value" id="statOldest">-</span></div>
-        <div class="stat-item"><span class="stat-label">Νεότερη:</span><span class="stat-value" id="statNewest">-</span></div>
+        <div class="stat-item"><span class="stat-label">Συνολο Τιτλων:</span><span class="stat-value" id="statTotal">0</span></div>
+        <div class="stat-item"><span class="stat-label">Ταινιες:</span><span class="stat-value" id="statMovies">0</span></div>
+        <div class="stat-item"><span class="stat-label">Σειρες:</span><span class="stat-value" id="statSeries">0</span></div>
+        <div class="stat-item"><span class="stat-label">Μ.Ο. Βαθμολογιας:</span><span class="stat-value" id="statAvgRating">0</span></div>
+        <div class="stat-item"><span class="stat-label">Πιο Δημοφιλες Genre:</span><span class="stat-value" id="statTopGenre">-</span></div>
+        <div class="stat-item"><span class="stat-label">Παλαιοτερη:</span><span class="stat-value" id="statOldest">-</span></div>
+        <div class="stat-item"><span class="stat-label">Νεοτερη:</span><span class="stat-value" id="statNewest">-</span></div>
     </div>
     <div class="dashboard-actions">
-        <button class="dash-btn" id="searchByIdBtn" style="background:#2ecc71;color:white;">Αναζήτηση με ID</button>
-        <button class="dash-btn" id="quickAddBtn" style="background:#2ecc71;color:white;">Γρήγορη Προσθήκη από Email</button>
-        <button class="dash-btn" id="addMovieFormBtn" style="background:#2ecc71;color:white;">Προσθήκη Ταινίας/Σειράς</button>
-        <button class="dash-btn" id="posterEditorBtn">Επεξεργασία Poster</button>
-        <button class="dash-btn" id="addByTmdbBtn" style="background:#9b59b6;color:white;">Προσθήκη από TMDB ID</button>
-        <button class="dash-btn" id="viewRequestsBtn" style="background:#9b59b6;color:white;">Προτάσεις Χρηστών</button>
-        <button class="dash-btn" id="enrichBiographiesBtn" style="background:#e67e22;color:white;">Ενημέρωση Βιογραφικών</button>
+        <button class="dash-btn" id="searchByIdBtn" style="background:#2ecc71;color:white;">Αναζητηση με ID</button>
+        <button class="dash-btn" id="quickAddBtn" style="background:#2ecc71;color:white;">Γρηγορη Προσθηκη απο Email</button>
+        <button class="dash-btn" id="addMovieFormBtn" style="background:#2ecc71;color:white;">Προσθηκη Ταινιας/Σειρας</button>
+        <button class="dash-btn" id="posterEditorBtn">Επεξεργασια Poster</button>
+        <button class="dash-btn" id="addByTmdbBtn" style="background:#9b59b6;color:white;">Προσθηκη απο TMDB ID</button>
+        <button class="dash-btn" id="viewRequestsBtn" style="background:#9b59b6;color:white;">Προτασεις Χρηστων</button>
+        <button class="dash-btn" id="enrichBiographiesBtn" style="background:#e67e22;color:white;">Ενημερωση Βιογραφικων</button>
         <button class="dash-btn" id="exportBtn">Export JSON</button>
-        <button class="dash-btn" id="removeLinksBtn" style="background:#e67e22;color:white;">Αφαίρεση όλων των Link & Export</button>
+        <button class="dash-btn" id="removeLinksBtn" style="background:#e67e22;color:white;">Αφαιρεση ολων των Link & Export</button>
         <button class="dash-btn" id="importBtn" style="background:#2ecc71;color:white;">Import JSON</button>
         <input type="file" id="importFile" accept=".json" style="display: none;">
         <button class="dash-btn" id="missingPostersBtn" style="background:#e67e22;color:white;">Ελεγχος Poster</button>
-        <button class="dash-btn" id="enrichOscarBtn" style="background:#f1c40f;color:#000;font-weight:bold;">🏆 ΠΡΟΣΘΗΚΗ OSCAR WINNER</button>
-        <button class="dash-btn" id="logoutBtn" style="background:#e74c3c;color:white;display:none;">Αποσύνδεση Διαχειριστή</button>
+        <button class="dash-btn" id="enrichOscarBtn" style="background:#f1c40f;color:#000;font-weight:bold;">ΠΡΟΣΘΗΚΗ OSCAR WINNER</button>
+        <button class="dash-btn" id="logoutBtn" style="background:#e74c3c;color:white;display:none;">Αποσυνδεση Διαχειριστη</button>
     </div>
 </div>
 
 <div class="search-section">
     <div class="search-wrapper">
-        <input type="text" id="movieSearch" placeholder="Αναζήτηση τίτλου, ηθοποιού, σκηνοθέτη...">
+        <input type="text" id="movieSearch" placeholder="Αναζητηση τιτλου, ηθοποιου, σκηνοθετη...">
         <button class="clear-search-btn hidden" id="clearSearchBtn">X</button>
     </div>
     <div class="filter-group">
         <select id="genreFilter">
-            <option value="All">Ολες οι Κατηγορίες</option>
-            <option value="Biography">Βιογραφικές</option>
-            <option value="Oscar Winner">Νικητές Οσκαρ</option>
+            <option value="All">Ολες οι Κατηγοριες</option>
+            <option value="Biography">Βιογραφικες</option>
+            <option value="Oscar Winner">Νικητες Οσκαρ</option>
         </select>
         <select id="sortSelect">
-            <option value="title">Τίτλος (Α-Ω)</option>
-            <option value="idDesc">ID (Νεότερα πρώτα)</option>
-            <option value="idAsc">ID (Παλαιότερα πρώτα)</option>
-            <option value="yearDesc">Νεότερες πρώτα</option>
-            <option value="ratingDesc">Βαθμολογία (Υψηλή-Χαμηλή)</option>
-            <option value="yearAsc">Παλαιότερες πρώτα</option>
-            <option value="latest">Πρόσφατες Προσθήκες</option>
-            <option value="qualityHD">Ποιότητα (HD/4K πρώτα)</option>
-            <option value="qualitySD">Ποιότητα (SD πρώτα)</option>
-            <option value="pendingOnly">Σε Αναμονή</option>
+            <option value="title">Τιτλος (Α-Ω)</option>
+            <option value="idDesc">ID (Νεοτερα πρωτα)</option>
+            <option value="idAsc">ID (Παλαιοτερα πρωτα)</option>
+            <option value="yearDesc">Νεοτερες πρωτα</option>
+            <option value="ratingDesc">Βαθμολογια (Υψηλη-Χαμηλη)</option>
+            <option value="yearAsc">Παλαιοτερες πρωτα</option>
+            <option value="latest" selected>Προσφατες Προσθηκες</option>
+            <option value="qualityHD">Ποιοτητα (HD/4K πρωτα)</option>
+            <option value="qualitySD">Ποιοτητα (SD πρωτα)</option>
+            <option value="pendingOnly">Σε Αναμονη</option>
             <option value="collection_favorites">Favorites</option>
             <option value="collection_watchlist">Watchlist</option>
+            <option value="dubbedOnly">Μεταγλωτισμενα</option>
+            <option value="seriesCompleted">Σειρες Ολοκληρωμενες</option>
+            <option value="seriesOngoing">Σειρες Σε Εξελιξη</option>
         </select>
         <select id="yearFilter"><option value="All">Ολα τα ετη</option></select>
         <select id="countryFilter"><option value="All">Ολες οι Χωρες</option></select>
         <select id="studioFilter">
-            <option value="All">Όλες οι Πλατφόρμες</option>
-            <option value="Netflix">🔴 Netflix</option>
-            <option value="Disney+">🏰 Disney+</option>
-            <option value="HBO Max / Max">🟣 HBO Max / Max</option>
-            <option value="Amazon Prime Video">🟦 Amazon Prime Video</option>
-            <option value="Apple TV+">🍏 Apple TV+</option>
-            <option value="Crunchyroll">🟠 Crunchyroll</option>
-            <option value="Rakuten Viki">💛 Rakuten Viki</option>
-            <option value="Άλλες Πλατφόρμες">🌐 Άλλες Πλατφόρμες</option>
+            <option value="All">Ολες οι Πλατφορμες</option>
+            <option value="Netflix">Netflix</option>
+            <option value="Disney+">Disney+</option>
+            <option value="HBO Max / Max">HBO Max / Max</option>
+            <option value="Amazon Prime Video">Amazon Prime Video</option>
+            <option value="Apple TV+">Apple TV+</option>
+            <option value="Crunchyroll">Crunchyroll</option>
+            <option value="Rakuten Viki">Rakuten Viki</option>
+            <option value="Αλλες Πλατφορμες">Αλλες Πλατφορμες</option>
         </select>
     </div>
 </div>
 
-<!-- Featured Movie -->
+<!-- ΠΡΟΤΕΙΝΟΜΕΝΗ ΤΑΙΝΙΑ ΤΗΣ ΗΜΕΡΑΣ - ΜΕ ΥΠΟΣΤΗΡΙΞΗ THEMES -->
 <div id="featuredMovieContainer" style="display: none; width: 100%; margin: 0 0 30px 0;">
     <div id="featuredHeroBg" style="width: 100%; min-height: 450px; background-size: cover; background-position: center; border-bottom: 3px solid var(--primary);">
         <div style="background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.6) 100%); width: 100%;" data-theme-overlay>
             <div style="max-width: 1400px; margin: 0 auto; padding: 35px 20px; display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
+                <!-- POSTER -->
                 <div style="position: relative; flex-shrink: 0;">
                     <img id="featuredPoster" src="" alt="Poster" style="width: 150px; height: 225px; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.5);">
                 </div>
+                
+                <!-- ΠΛΗΡΟΦΟΡΙΕΣ -->
                 <div style="flex: 1; min-width: 250px;">
                     <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 8px;">
-                        <h2 id="featuredTitle" style="margin: 0; font-size: 32px; color: var(--primary); text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Τίτλος</h2>
-                        <div style="background: #1e7e34; color: white; padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: bold;">Προτεινόμενο</div>
+                        <h2 id="featuredTitle" style="margin: 0; font-size: 32px; color: var(--primary); text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Τιτλος</h2>
+                        <div style="background: #1e7e34; color: white; padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: bold;">Προτεινομενο</div>
                     </div>
                     <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
                         <span id="featuredYear" style="background: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; color: white;">2024</span>
                         <span id="featuredQuality" style="background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; font-size: 13px; color: white;">HD</span>
-                        <span id="featuredType" style="background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; font-size: 13px; color: white;">Ταινία</span>
+                        <span id="featuredType" style="background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; font-size: 13px; color: white;">Ταινια</span>
                     </div>
                     <div id="featuredStars" style="margin-bottom: 12px; font-size: 20px; color: var(--gold);">★★★★★</div>
-                    <p id="featuredDesc" style="color: var(--text); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">Περιγραφή...</p>
+                    <p id="featuredDesc" style="color: var(--text); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">Περιγραφη...</p>
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                         <button id="featuredWatchBtn" style="background: var(--primary); color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: bold;">► ΠΡΟΒΟΛΗ</button>
                         <button id="featuredWatchlistBtn" style="background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px 26px; border-radius: 40px; cursor: pointer; font-weight: bold;">➕ Watchlist</button>
@@ -340,15 +218,15 @@
 <div id="initialLoadingOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:10000; display:flex; align-items:center; justify-content:center; flex-direction:column;">
     <div style="text-align:center;">
         <div style="font-size:48px; margin-bottom:20px;">🎬</div>
-        <div style="font-size:20px; margin-bottom:10px;">Φόρτωση βάσης δεδομένων...</div>
-        <div style="font-size:12px; opacity:0.7;">Παρακαλώ περιμένετε</div>
+        <div style="font-size:20px; margin-bottom:10px;">Φορτωση βασης δεδομενων...</div>
+        <div style="font-size:12px; opacity:0.7;">Παρακαλω περιμενετε</div>
         <div style="width:200px; height:4px; background:#333; margin-top:20px; border-radius:4px; overflow:hidden;">
             <div id="loadingProgressBar" style="width:0%; height:100%; background:#e50914; transition:width 0.3s;"></div>
         </div>
     </div>
 </div>
 
-<div class="movie-grid dashboard-hidden" id="movieGrid"><div style="text-align:center;padding:50px;">Φόρτωση δεδομένων...</div></div>
+<div class="movie-grid dashboard-hidden" id="movieGrid"><div style="text-align:center;padding:50px;">Φορτωση δεδομενων...</div></div>
 <button id="loadMoreBtn" style="display:none;">ΦΟΡΤΩΣΗ ΠΕΡΙΣΣΟΤΕΡΩΝ</button>
 
 <div id="detailModal">
@@ -358,13 +236,14 @@
         <div class="modal-info">
             <h2 id="modalTitle"></h2>
             <div class="modal-meta-bar" id="modalMetaBar">
-                <span class="year-badge" id="modalYear"></span>
-                <span class="year-badge" id="modalId" style="background:#555; margin-left:5px; display:none;"></span>
-                <span id="modalQualityBadge"></span>
-                <span id="modalTypeBadge"></span>
-                <span id="modalCountryBadge"></span>
-                <span id="modalGenreBadge"></span>
-            </div>
+    <span class="year-badge" id="modalYear"></span>
+    <span class="year-badge" id="modalId" style="background:#555; margin-left:5px; display:none;"></span>
+    <span id="modalRuntime" style="background:#8e44ad; padding:4px 12px; border-radius:20px; font-size:13px; color:white; display:none;"></span>
+    <span id="modalQualityBadge"></span>
+    <span id="modalTypeBadge"></span>
+    <span id="modalCountryBadge"></span>
+    <span id="modalGenreBadge"></span>
+</div>
             <div class="rating-section">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <div class="rating-stars-big" id="modalStarsBig">★★★★★</div>
@@ -375,25 +254,25 @@
                     <button id="modalDownloadBtn" class="download-btn-yts" style="display:none;">ΠΡΟΒΟΛΗ</button>
                     <a id="modalImdb" class="modal-icon-btn" href="#" target="_blank" style="background:#f5c518;color:#000;">IMDB</a>
                     <a id="modalTmdb" class="modal-icon-btn" href="#" target="_blank" style="background:#01b4e4;">TMDB</a>
-                    <button id="modalEditBtn" class="modal-icon-btn" style="display:none;">Επεξεργασία</button>
-                    <button id="modalDeleteBtn" class="modal-icon-btn danger" style="display:none;">Διαγραφή</button>
-                    <button id="modalAddBtn" class="modal-icon-btn" style="display:none; background:#2ecc71;">Προσθήκη</button>
-                    <button id="modalRequestBtn" class="modal-icon-btn" style="background:#9b59b6;display:none;">Πρότεινε Ταινία</button>
+                    <button id="modalEditBtn" class="modal-icon-btn" style="display:none;">Επεξεργασια</button>
+                    <button id="modalDeleteBtn" class="modal-icon-btn danger" style="display:none;">Διαγραφη</button>
+                    <button id="modalAddBtn" class="modal-icon-btn" style="display:none; background:#2ecc71;">Προσθηκη</button>
+                    <button id="modalRequestBtn" class="modal-icon-btn" style="background:#9b59b6;display:none;">Προτεινε Ταινια</button>
                 </div>
             </div>
             <div class="modal-description" id="modalDesc"></div>
             <div class="info-grid">
-                <div class="info-grid-item"><span class="info-grid-label">Σκηνοθεσία</span><span class="info-grid-value" id="modalDirector" style="cursor:pointer;color:var(--primary);">-</span></div>
-                <div class="info-grid-item"><span class="info-grid-label">Σενάριο</span><span class="info-grid-value" id="modalWriter" style="cursor:pointer;color:var(--primary);">-</span></div>
-                <div class="info-grid-item"><span class="info-grid-label">Πλατφόρμα</span><span class="info-grid-value" id="modalStudio">-</span></div>
-                <div class="info-grid-item"><span class="info-grid-label">Ποιότητα</span><span class="info-grid-value" id="modalQualityText">-</span></div>
+                <div class="info-grid-item"><span class="info-grid-label">Σκηνοθεσια</span><span class="info-grid-value" id="modalDirector" style="cursor:pointer;color:var(--primary);">-</span></div>
+                <div class="info-grid-item"><span class="info-grid-label">Σεναριο</span><span class="info-grid-value" id="modalWriter" style="cursor:pointer;color:var(--primary);">-</span></div>
+                <div class="info-grid-item"><span class="info-grid-label">Πλατφορμα</span><span class="info-grid-value" id="modalStudio">-</span></div>
+                <div class="info-grid-item"><span class="info-grid-label">Ποιοτητα</span><span class="info-grid-value" id="modalQualityText">-</span></div>
             </div>
             <div class="collections-section" style="margin:15px 0;padding:10px;background:var(--input-bg);border-radius:12px;">
-                <div class="collections-label" style="font-size:18px;font-weight:bold;margin-bottom:12px;text-align:left;">Συλλογές</div>
+                <div class="collections-label" style="font-size:18px;font-weight:bold;margin-bottom:12px;text-align:left;">Συλλογες</div>
                 <div id="modalCollections" class="collections-buttons" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
             </div>
             <div style="width:100%;">
-                <div class="info-grid-label" style="margin-bottom:8px;padding-left:12px;">Ηθοποιοί</div>
+                <div class="info-grid-label" style="margin-bottom:8px;padding-left:12px;">Ηθοποιοι</div>
                 <div id="modalActorsContainer" class="actors-container"></div>
             </div>
         </div>
@@ -403,54 +282,59 @@
 <button id="backToTop">↑</button>
 <div class="version-badge" id="versionBadge">Εκδοση: 2.1.1</div>
 
-<!-- Legal Modals -->
+<!-- ============ ΝΟΜΙΚΕΣ ΣΕΛΙΔΕΣ (MODALS) ============ -->
+
+<!-- Terms of Service Modal -->
 <div id="termsModal" class="legal-modal">
     <div class="legal-modal-content">
         <span class="legal-close">&times;</span>
-        <h2>Όροι Χρήσης</h2>
+        <h2>Οροι Χρησης</h2>
         <div class="legal-scroll">
-            <h3>1. Αποδοχή Όρων</h3>
-            <p>Χρησιμοποιώντας το YIOIO, αποδέχεστε τους παρόντες όρους χρήσης.</p>
-            <h3>2. Υπευθυνότητα Χρήστη</h3>
-            <p>Ο χρήστης είναι αποκλειστικά υπεύθυνος για τα αρχεία βίντεο που διαχειρίζεται και τα links που αποθηκεύει.</p>
-            <h3>3. Απαγόρευση Παράνομου Περιεχομένου</h3>
-            <p>Απαγορεύεται η χρήση του YIOIO για διανομή πειρατικού υλικού.</p>
-            <h3>4. Αποποίηση Ευθύνης</h3>
-            <p>Το YIOIO είναι εργαλείο οργάνωσης προσωπικών συλλογών. Οι χρήστες είναι υπεύθυνοι για το περιεχόμενό τους.</p>
-            <p class="legal-date">Τελευταία ενημέρωση: 31 Μαΐου 2026</p>
+            <h3>1. Αποδοχη Ορων</h3>
+            <p>Χρησιμοποιωντας το YIOIO, αποδεχεστε τους παρόντες ορους χρησης.</p>
+            <h3>2. Υπευθυνοτητα Χρηστη</h3>
+            <p>Ο χρηστης ειναι αποκλειστικα υπευθυνος για τα αρχεια βιντεο που διαχειριζεται και τα links που αποθηκευει.</p>
+            <h3>3. Απαγορευση Παρανομου Περιεχομενου</h3>
+            <p>Απαγορευεται η χρηση του YIOIO για διανομη πειρατικου υλικου.</p>
+            <h3>4. Αποποιηση Ευθυνης</h3>
+            <p>Το YIOIO ειναι εργαλειο οργανωσης προσωπικων συλλογων. Οι χρηστες ειναι υπευθυνοι για το περιεχομενο τους.</p>
+            <p class="legal-date">Τελευταια ενημερωση: 31 Μαϊου 2026</p>
         </div>
     </div>
 </div>
 
+<!-- Privacy Policy Modal -->
 <div id="privacyModal" class="legal-modal">
     <div class="legal-modal-content">
         <span class="legal-close">&times;</span>
-        <h2>Πολιτική Απορρήτου (GDPR)</h2>
+        <h2>Πολιτικη Απορρητου (GDPR)</h2>
         <div class="legal-scroll">
-            <p>Το YIOIO αποθηκεύει τοπικά τις λίστες ταινιών και τις συλλογές σας. Δεν συλλέγουμε προσωπικά δεδομένα.</p>
-            <p class="legal-date">Τελευταία ενημέρωση: 31 Μαΐου 2026</p>
+            <p>Το YIOIO αποθηκευει τοπικα τις λιστες ταινιων και τις συλλογες σας. Δεν συλλεγουμε προσωπικα δεδομενα.</p>
+            <p class="legal-date">Τελευταια ενημερωση: 31 Μαϊου 2026</p>
         </div>
     </div>
 </div>
 
+<!-- DMCA / Copyright Modal -->
 <div id="dmcaModal" class="legal-modal">
     <div class="legal-modal-content">
         <span class="legal-close">&times;</span>
-        <h2>Πολιτική Πνευματικών Δικαιωμάτων (DMCA)</h2>
+        <h2>Πολιτικη Πνευματικων Δικαιωματων (DMCA)</h2>
         <div class="legal-scroll">
-            <p>Για καταγγελίες DMCA, επικοινωνήστε στο yioiorequests@gmail.com</p>
-            <p class="legal-date">Τελευταία ενημέρωση: 31 Μαΐου 2026</p>
+            <p>Για καταγγελιες DMCA, επικοινωνηστε στο yioiorequests@gmail.com</p>
+            <p class="legal-date">Τελευταια ενημερωση: 31 Μαϊου 2026</p>
         </div>
     </div>
 </div>
 
+<!-- GDPR Data Management Modal -->
 <div id="gdprModal" class="legal-modal">
     <div class="legal-modal-content">
         <span class="legal-close">&times;</span>
-        <h2>Διαχείριση Δεδομένων (GDPR)</h2>
+        <h2>Διαχειριση Δεδομενων (GDPR)</h2>
         <div class="legal-scroll">
-            <button id="gdprExportBtn" style="background:#2196f3;color:white;padding:12px;border-radius:8px;width:100%;margin-bottom:10px;">Εξαγωγή Δεδομένων</button>
-            <button id="gdprDeleteBtn" style="background:#e74c3c;color:white;padding:12px;border-radius:8px;width:100%;">Διαγραφή Δεδομένων</button>
+            <button id="gdprExportBtn" style="background:#2196f3;color:white;padding:12px;border-radius:8px;width:100%;margin-bottom:10px;">Εξαγωγη Δεδομενων</button>
+            <button id="gdprDeleteBtn" style="background:#e74c3c;color:white;padding:12px;border-radius:8px;width:100%;">Διαγραφη Δεδομενων</button>
         </div>
     </div>
 </div>
@@ -458,18 +342,34 @@
 <!-- Footer -->
 <footer class="site-footer">
     <div class="footer-links">
-        <a href="#" id="termsLink">Όροι Χρήσης</a>
-        <a href="#" id="privacyLink">Πολιτική Απορρήτου</a>
+        <a href="#" id="termsLink">Οροι Χρησης</a>
+        <a href="#" id="privacyLink">Πολιτικη Απορρητου</a>
         <a href="#" id="dmcaLink">DMCA / Copyright</a>
-        <a href="#" id="gdprLink">GDPR (Δεδομένα)</a>
+        <a href="#" id="gdprLink">GDPR (Δεδομενα)</a>
     </div>
     <div class="footer-disclaimer">
-        ⚠️ Το YIOIO είναι εργαλείο οργάνωσης προσωπικών συλλογών. Οι χρήστες είναι υπεύθυνοι για τη νομιμότητα του περιεχομένου τους.
+        Το YIOIO ειναι εργαλειο οργανωσης προσωπικων συλλογων. Οι χρηστες ειναι υπευθυνοι για τη νομιμοτητα του περιεχομενου τους.
     </div>
     <div class="footer-copyright">
-        © 2026 YIOIO - Με επιφύλαξη παντός δικαιώματος
+        © 2026 YIOIO - Με επιφυλαξη παντος δικαιωματος
     </div>
 </footer>
+
+<!-- ============ ΕΝΣΩΜΑΤΩΜΕΝΟΣ VIDEO PLAYER ============ -->
+<div id="videoPlayerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:99999;">
+    <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+        <div style="position:absolute; top:20px; right:20px; z-index:10; display:flex; gap:10px;">
+            <button onclick="closeVideoPlayer()" style="background:#e50914; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">✕ Κλεισιμο</button>
+        </div>
+        <div style="width:90%; max-width:1200px; background:#000; border-radius:12px; overflow:hidden; box-shadow:0 0 50px rgba(0,0,0,0.8);">
+            <video id="videoPlayer" controls style="width:100%; max-height:80vh; background:#000; display:block;">
+                <source id="videoSource" src="" type="video/mp4">
+                <p>Ο browser σας δεν υποστηριζει την αναπαραγωγη βιντεο.</p>
+            </video>
+        </div>
+        <div id="videoPlayerInfo" style="color:white; margin-top:15px; text-align:center; font-size:14px; opacity:0.7;"></div>
+    </div>
+</div>
 
 <script src="config.js"></script>
 <script src="app_fixed.js"></script>

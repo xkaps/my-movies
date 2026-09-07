@@ -51,31 +51,176 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
 
 .movie-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); transition: transform 0.3s ease; cursor: pointer; }
 .movie-card:hover { transform: translateY(-8px); border-color: var(--primary); }
-.img-container { position: relative; aspect-ratio: 2 / 3; background: #1a1a1a; }
+.img-container { position: relative; aspect-ratio: 2 / 3; background: #1a1a1a; overflow: hidden; }
 .movie-card img { width: 100%; height: 100%; object-fit: cover; }
-.quality-tag { position: absolute; top: 10px; left: 10px; background: #2ecc71; color: white; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 1; }
-.quality-tag.sd-blue { background: #007bff; }
-.pending-badge { 
-    position: absolute; 
-    top: 10px; 
-    left: 90px; 
-    background: #e67e22; 
-    color: white; 
-    font-size: 9px; 
-    font-weight: bold; 
-    padding: 3px 6px; 
-    border-radius: 4px; 
-    z-index: 2; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+
+/* ============ BADGES ΣΤΟ POSTER - ΟΛΑ ΜΕΣΑ ΣΕ WRAPPER ============ */
+
+/* ΚΑΝΟΝΙΚΟ QUALITY - ΜΕΣΑ ΣΤΟ WRAPPER */
+.img-container .quality-tag {
+    background: #2ecc71;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
 }
-.new-badge-poster { position: absolute; top: 10px; left: 45px; background: #e50914; color: white; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.3); animation: pulse 1.5s ease-in-out infinite; }
-@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.9; } }
+.img-container .quality-tag.sd-blue {
+    background: #3498db;
+}
+
+/* MIXED QUALITY - ΜΕΣΑ ΣΤΟ WRAPPER */
+.img-container .quality-tag.mixed {
+    background: transparent !important;
+    display: inline-flex !important;
+    gap: 0px !important;
+    padding: 0 !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+}
+.img-container .quality-tag.mixed .hd-part {
+    background: #2ecc71;
+    color: white;
+    padding: 2px 5px;
+    font-size: 9px;
+    font-weight: bold;
+    display: inline-block;
+}
+.img-container .quality-tag.mixed .sd-part {
+    background: #3498db;
+    color: white;
+    padding: 2px 5px;
+    font-size: 9px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* ===== BADGES WRAPPER - ΟΛΑ ΤΑ BADGES ΜΑΖΙ ===== */
+.img-container .badges-wrapper {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 2px;
+    z-index: 10;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* NEW badge */
+.img-container .new-badge-poster {
+    background: #e50914;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    animation: pulse 1.5s ease-in-out infinite;
+    display: inline-block;
+}
+
+/* PENDING badge */
+.img-container .pending-badge {
+    background: #e67e22;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    display: inline-block;
+}
+
+/* Codec tag */
+.img-container .codec-tag-card {
+    background: #9b59b6;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Απόκρυψη κενών wrappers */
+.img-container .badges-wrapper:empty {
+    display: none;
+}
+
 .info { padding: 15px; text-align: center; }
 .info h3 { font-size: 14px; margin: 0 0 8px; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; text-align: center; line-height: 1.3; max-width: 100%; }
 .stars { color: var(--gold); font-size: 16px; margin-bottom: 10px; }
 .rating-number { font-size: 12px; margin-left: 8px; opacity: 0.8; }
 .play-btn { background: var(--primary); color: white; padding: 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: block; text-align: center; }
 #loadMoreBtn { display: block; margin: 20px auto 50px; padding: 12px 30px; background: var(--primary); color: white; border: none; border-radius: 30px; cursor: pointer; }
+
+/* ============ PLAY OVERLAY ΣΤΟ POSTER ============ */
+.play-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 12px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 5;
+    border-radius: 0 0 12px 12px;
+}
+
+.play-overlay.local {
+    background: rgba(46, 204, 113, 0.85);
+    color: white;
+}
+
+.play-overlay.link {
+    background: rgba(52, 152, 219, 0.85);
+    color: white;
+}
+
+.play-overlay:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+}
+
+/* ============ VIDEO PLAYER ============ */
+#videoPlayerModal {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+#videoPlayer {
+    background: #000;
+}
+
+/* ============ SCAN RESULTS ============ */
+.scan-result-item {
+    transition: background 0.2s ease;
+}
+
+.scan-result-item:hover {
+    background: var(--input-bg);
+}
+
+/* ============ SOURCE OPTIONS ============ */
+.source-option:hover {
+    background: var(--primary) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+}
 
 /* MODAL */
 #detailModal { 
@@ -141,7 +286,7 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
 .modal-meta-bar { 
     display: flex; 
     flex-wrap: wrap; 
-    gap: 12px; 
+    gap: 8px; 
     margin: 10px 0; 
     font-size: 14px; 
     color: #ccc; 
@@ -413,10 +558,7 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
         width: 100% !important;
     }
     .dashboard { display: none; }
-    .new-badge-poster { left: 55px; }
-    .pending-badge { left: 110px; }
     
-    /* Responsive για ηθοποιούς σε κινητά */
     .actor-avatar { 
         width: 70px; 
         height: 70px; 
@@ -434,7 +576,6 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
         width: 80px;
     }
     
-    /* Responsive για info grid σε κινητά */
     .info-grid { 
         grid-template-columns: 1fr;
         gap: 12px;
@@ -479,6 +620,7 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
 .request-tab-btn { background: var(--input-bg); color: var(--text); border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
 .request-tab-btn.active { background: var(--primary); color: white; }
 .request-tab-btn:hover { background: var(--primary); color: white; opacity: 0.8; }
+
 /* ============ ΜΕΓΑΛΥΤΕΡΕΣ ΓΡΑΜΜΑΤΟΣΕΙΡΕΣ ΣΤΟ MODAL ============ */
 .modal-info {
     font-size: 18px;
@@ -565,9 +707,8 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     background: rgba(229,9,20,0.15);
     transform: translateY(-2px);
 }
-/* ============ ΠΡΟΣΘΗΚΗ ΓΙΑ SUGGESTION POPUP ============ */
 
-/* Suggestion Platform Buttons */
+/* ============ ΠΡΟΣΘΗΚΗ ΓΙΑ SUGGESTION POPUP ============ */
 .suggestion-platform-btn {
     cursor: pointer;
     transition: all 0.2s ease;
@@ -577,7 +718,6 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     transform: translateY(-2px);
 }
 
-/* Scrollbar για το popup */
 #freeSuggestionPopup::-webkit-scrollbar {
     width: 6px;
 }
@@ -592,11 +732,11 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     border-radius: 10px;
 }
 
-/* Για Firefox */
 #freeSuggestionPopup {
     scrollbar-width: thin;
     scrollbar-color: var(--primary) rgba(255,255,255,0.05);
 }
+
 /* ============ ΝΟΜΙΚΑ MODALS ============ */
 .legal-modal {
     display: none;
@@ -731,6 +871,7 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
 #gdprExportBtn:hover, #gdprDeleteBtn:hover {
     transform: translateY(-2px);
 }
+
 /* ΤΕΛΙΚΗ ΔΥΝΑΤΗ ΛΥΣΗ */
 .modal-icon-btn, .download-btn-yts, #modalDownloadBtn, #modalAddBtn {
     opacity: 1 !important;
@@ -742,6 +883,7 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     position: relative !important;
     cursor: pointer !important;
 }
+
 /* ============ ΠΡΟΤΕΙΝΟΜΕΝΗ ΤΑΙΝΙΑ - ΠΛΗΡΕΣ ΠΛΑΤΟΣ ============ */
 #featuredMovieContainer {
     width: 100%;
@@ -752,7 +894,6 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     border-radius: 0 !important;
 }
 
-/* Responsive για κινητά */
 @media (max-width: 700px) {
     #featuredMovieContainer > div > div > div {
         flex-direction: column;
@@ -778,7 +919,6 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     }
 }
 
-/* Hover effects για τα κουμπιά */
 #featuredWatchBtn:hover {
     transform: translateY(-2px);
     filter: brightness(1.1);
@@ -788,7 +928,7 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     transform: translateY(-2px);
     background: rgba(229,9,20,0.1);
 }
-/* ============ LIGHT THEME FIX FOR FEATURED MOVIE ============ */
+
 [data-theme="light"] #featuredDesc {
     color: #1a1a1a !important;
     text-shadow: none !important;
@@ -822,11 +962,11 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     border-color: var(--primary) !important;
     color: var(--primary) !important;
 }
-/* Απόκρυψη της μικρής αφίσας στο banner της προτεινόμενης ταινίας */
+
 #featuredPoster {
     display: none !important;
 }
-/* Διόρθωση backdrop - κάλυψη όλου του banner */
+
 #featuredHeroBg {
     position: relative;
     width: 100%;
@@ -845,7 +985,6 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
     backdrop-filter: brightness(0.7);
 }
 
-/* Για κινητά */
 @media (max-width: 768px) {
     #featuredHeroBg {
         min-height: 550px;
@@ -854,7 +993,7 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
         min-height: 550px;
     }
 }
-/* Μετακίνηση μπάρας αναζήτησης στο header */
+
 .header-controls .search-wrapper {
     width: 220px;
     margin-right: 5px;
@@ -882,46 +1021,170 @@ header { padding: 15px 5%; background: var(--card); position: sticky; top: 0; z-
         margin: 5px 0;
     }
 }
-/* Απόκρυψη του παλιού search-section (αν υπάρχει) */
 .search-section {
     display: none;
 }
-/* Τα φίλτρα τα αφήνουμε όπως είναι, αλλά αν θες μπορείς να τα στοιχίσεις */
 .filter-group {
     margin-top: 10px;
     margin-bottom: 20px;
 }
-/* Μεγαλύτερη γραμματοσειρά για την περίληψη στο banner */
 #featuredDesc {
     font-size: 16px !important;
     line-height: 1.6 !important;
 }
-
-/* Αν θέλεις ακόμα μεγαλύτερη, π.χ. 18px, άλλαξε την τιμή */
-
-/* Κάνει το backdrop πιο ζωντανό, μειώνοντας το μαύρο overlay */
 #featuredHeroBg > div {
     background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.3) 100%) !important;
 }
-
-/* Για ακόμα πιο ανοιχτό (ζωντανό) αποτέλεσμα, χρησιμοποίησε αυτό: */
-/*
-#featuredHeroBg > div {
-    background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.15) 100%) !important;
-}
-*/
-
-/* Στο light theme, κάνε το overlay ακόμα πιο ανοιχτόχρωμο (λευκό διάφανο) */
 [data-theme="light"] #featuredHeroBg > div {
     background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.2) 100%) !important;
 }
-/* Τίτλος προτεινόμενης ταινίας – λευκός στο dark, μαύρος στο light */
 #featuredTitle {
     color: #ffffff !important;
     text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
-
 [data-theme="light"] #featuredTitle {
     color: #1a1a1a !important;
     text-shadow: none;
+}
+
+/* ============ QUALITY BADGE ΣΤΟ MODAL ============ */
+
+/* Το container του quality badge */
+#modalQualityBadge {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* ΚΑΝΟΝΙΚΟ HD ή SD - ΟΛΟΚΛΗΡΩΜΕΝΟ ΟΒΑΛ */
+#modalQualityBadge .quality-tag {
+    background: #2ecc71 !important;
+    color: white !important;
+    padding: 4px 14px !important;
+    border-radius: 20px !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+}
+
+#modalQualityBadge .quality-tag.sd-blue {
+    background: #3498db !important;
+}
+
+/* HD/SD MIXED - ΟΛΟΚΛΗΡΩΜΕΝΟ ΟΒΑΛ */
+.quality-badge-mixed {
+    display: inline-flex !important;
+    align-items: center !important;
+    background: #2ecc71 !important;
+    padding: 4px 10px !important;
+    border-radius: 20px !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    color: white !important;
+    overflow: hidden !important;
+}
+
+.quality-badge-mixed .hd-part {
+    background: #2ecc71;
+    color: white;
+    padding: 0 3px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.quality-badge-mixed .sd-part {
+    background: #3498db;
+    color: white;
+    padding: 0 3px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* Codec badge στο modal */
+.codec-badge-modal {
+    background: #9b59b6 !important;
+    color: white !important;
+    padding: 4px 12px !important;
+    border-radius: 20px !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+}
+
+/* Απόκρυψη κενών spans */
+#modalMetaBar span:empty {
+    display: none !important;
+}
+
+/* Σωστή απόσταση στο modal meta bar */
+.modal-meta-bar {
+    gap: 8px !important;
+}
+/* Απλό και καθαρό */
+.quality-tag { background-color: #2ecc71 !important; } /* HD */
+.quality-tag.sd-blue { background-color: #3498db !important; } /* SD */
+.codec-badge-modal, .codec-tag-card { background-color: #9b59b6 !important; } /* H.265 */
+/* ============ ΣΕΙΡΕΣ: COMPLETED & ONGOING (ΧΩΡΙΣ EMOJI) ============ */
+.img-container .series-running-badge {
+    background-color: #2ecc71 !important;
+    color: white !important;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+.img-container .series-completed-badge {
+    background-color: #3498db !important;
+    color: white !important;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    display: inline-block;
+    text-transform: uppercase;
+}
+/* ============ DUBBED & SUB BADGES ============ */
+.img-container .dubbed-badge {
+    background: #2ecc71;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.img-container .subtitled-badge {
+    background: #3498db;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Series Status badges (αν δεν υπάρχουν ήδη) */
+.img-container .series-completed-badge {
+    background: #2ecc71;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.img-container .series-running-badge {
+    background: #f39c12;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
 }

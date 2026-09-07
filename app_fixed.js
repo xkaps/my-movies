@@ -778,7 +778,7 @@ let dubbedBadge = '';
 if (m.dubbed === 'dubbed') {
     dubbedBadge = `<span class="dubbed-badge">Μεταγλωττισμένο</span>`;
 } else if (m.dubbed === 'subtitled') {
-    dubbedBadge = `<span class="subtitled-badge">ΥΠΟΤΙΤΛΟΙ</span>`;
+    dubbedBadge = `<span class="subtitled-badge">Υπότιτλοι</span>`;
 }
 
         // ΟΛΑ ΤΑ BADGES ΣΕ ΕΝΑ WRAPPER (συμπεριλαμβανομένου του quality)

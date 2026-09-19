@@ -849,6 +849,7 @@ const actorImageCache = new Map();
 // ============ ΛΙΣΤΑ ΜΕ ΧΕΙΡΟΚΙΝΗΤΕΣ ΦΩΤΟΓΡΑΦΙΕΣ ============
 const ACTOR_IMAGE_OVERRIDES = {
     "Barbara Harris": "https://media.themoviedb.org/t/p/w600_and_h900_face/9gFrDXHT42V8v8rn931ZNsB7DyQ.jpg",
+    "Kirk Douglas": "https://media.themoviedb.org/t/p/w600_and_h900_face/t94It9bPI6uBvNuuQlQipyYyURC.jpg",
 };
 
 // ============ ΑΝΑΖΗΤΗΣΗ ΦΩΤΟΓΡΑΦΙΑΣ ΗΘΟΠΟΙΟΥ ============
